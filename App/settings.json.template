@@ -1,0 +1,7 @@
+{
+  "token": "TOKEN.GOES.HERE",
+  
+  "prefixes": [
+    "/", "."
+  ]
+}
