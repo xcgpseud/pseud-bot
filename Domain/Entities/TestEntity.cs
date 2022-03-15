@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    public class TestEntity : IEntity
+    public class TestEntity : BaseEntity, IEntity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Guid { get; set; }
-
         [Required]
         public string Name { get; set; } = "";
 

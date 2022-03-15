@@ -22,43 +22,12 @@ public class TestModule : BaseCommandModule
     [Command("create")]
     public async Task Create(CommandContext ctx, string name, string description)
     {
-        var model = new Test
-        {
-            Name = name,
-            Description = description,
-            DateCreated = DateTime.UtcNow,
-        };
-
-        var result = await _testHandler.Create(model);
-
-        var embedBuilder = new DiscordEmbedBuilder
-        {
-            Color = DiscordColor.White,
-            Title = result?.Name,
-            Description = result?.Description,
-        };
-
-        await ctx.RespondAsync(embedBuilder.Build());
+        await _testHandler.Create(ctx, name, description);
     }
 
     [Command("find")]
     public async Task Find(CommandContext ctx, string nameSearch)
     {
-        var results = await _testHandler.GetAllByPredicate(
-            (Test test) => test.Name.ToLower().Contains(nameSearch.ToLower())
-        );
-
-        var embedBuilder = new DiscordEmbedBuilder
-        {
-            Color = DiscordColor.Gold,
-            Title = $"Results ({results.Count()})"
-        };
-        
-        foreach (var result in results)
-        {
-            embedBuilder.AddField(result.Name, result.Description);
-        }
-
-        await ctx.RespondAsync(embedBuilder.Build());
+        await _testHandler.FindByName(ctx, nameSearch);
     }
 }
