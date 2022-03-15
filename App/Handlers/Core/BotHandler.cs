@@ -1,5 +1,6 @@
 ﻿using App.Helpers;
 using App.Modules;
+using App.Modules.Racing;
 using App.Services;
 using Database.Contexts;
 using Domain.DataModels.Config;
@@ -45,6 +46,7 @@ namespace App.Handlers.Core
             _commandsNext = _discordClient.UseCommandsNext(commandsNextConfig);
 
             _commandsNext.RegisterCommands<TestModule>();
+            _commandsNext.RegisterCommands<VehicleModule>();
 
             _discordClient.UseInteractivity(interactivityConfig);
 
