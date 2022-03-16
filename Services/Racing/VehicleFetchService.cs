@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Domain.DataModels.Racing;
 using HtmlAgilityPack;
+using ScrapySharp.Extensions;
 using Services.Interfaces.Racing;
 
 namespace Services.Racing;
@@ -44,15 +45,26 @@ public class VehicleFetchService : IVehicleFetchService
         // #page>div>p(foreach)[span[text]]
         var descriptionElements = htmlDocument
             .GetElementbyId("page")
-            .SelectNodes("//div/p/span[@style='font-weight: 400;']");
-        
-        // some don't have spans so fix this
+            .CssSelect("div > p")
+            .ToList();
 
-        var descriptionStrings = descriptionElements.Select(
-            x => x.GetDirectInnerText()
-        );
+        // We remove the last 2 as they are persistent ad-based text entries
+        descriptionElements.RemoveAt(descriptionElements.Count - 1);
+        descriptionElements.RemoveAt(descriptionElements.Count - 1);
 
-        var description = string.Join("", descriptionStrings);
+        var description = "";
+
+        foreach (var descriptionElement in descriptionElements)
+        {
+            var innerText = descriptionElement.GetDirectInnerText();
+
+            if (string.IsNullOrEmpty(innerText))
+            {
+                innerText = descriptionElement.CssSelect("span").FirstOrDefault()?.GetDirectInnerText();
+            }
+
+            description += innerText;
+        }
 
         return description;
     }
